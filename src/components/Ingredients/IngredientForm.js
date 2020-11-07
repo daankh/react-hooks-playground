@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Card from '../UI/Card';
 import './IngredientForm.css';
 
-const IngredientForm = React.memo(({setIngredients}) => {
+const IngredientForm = React.memo(({addIngredient}) => {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("")
 
@@ -11,11 +11,10 @@ const IngredientForm = React.memo(({setIngredients}) => {
     event.preventDefault();
     if (name && amount) {
       const ingredient = {
-        id: Math.random().toString(),
         title: name,
         amount
       }
-      setIngredients((prevIngredients) => [...prevIngredients, ingredient]);
+      addIngredient(ingredient);
       setName("");
       setAmount("");
     }
