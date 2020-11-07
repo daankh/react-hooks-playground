@@ -54,7 +54,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
     }).then(response => {
       return response.json();
     }).then(responseBody => {
-      const filteredIngredients = ingredients.filter(ingredient => responseBody.name !== id);
+      const filteredIngredients = ingredients.filter(ingredient => ingredient.id !== responseBody.name);
       setIngredients(filteredIngredients);
     })
     
