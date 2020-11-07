@@ -1,16 +1,32 @@
-import React from 'react';
+import React,  { useState, useMemo }  from 'react';
 
 import IngredientForm from './IngredientForm';
+import IngredientList from "./IngredientList";
 import Search from './Search';
 
-function Ingredients() {
+const Ingredients = () => {
+
+  const [ingredients, setIngredients] = useState([]);
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const visibleIngredients = useMemo(() => {
+    if (searchInputValue) {
+      return ingredients.filter((ingredient => ingredient.title.toLowerCase().includes(searchInputValue.toLocaleLowerCase())));
+    }
+    return ingredients; 
+  }, [ingredients, searchInputValue]);
+
+  const removeItem = (id) => {
+    const filteredIngredients = ingredients.filter(ingredient => ingredient.id !== id);
+    setIngredients(filteredIngredients);
+  }
+
   return (
     <div className="App">
-      <IngredientForm />
+      <IngredientForm setIngredients={setIngredients}/>
 
       <section>
-        <Search />
-        {/* Need to add list here! */}
+        <Search searchInputValue={searchInputValue} setSearchInputValue={setSearchInputValue}/>
+        <IngredientList ingredients={visibleIngredients} onRemoveItem={removeItem}/>
       </section>
     </div>
   );
