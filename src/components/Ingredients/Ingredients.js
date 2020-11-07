@@ -2,6 +2,7 @@ import React,  { useState, useEffect, useMemo }  from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from "./IngredientList";
+import ErrorModal from "../UI/ErrorModal";
 import Search from './Search';
 
 const Ingredients = () => {
@@ -9,6 +10,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
   const [ingredients, setIngredients] = useState([]);
   const [searchInputValue, setSearchInputValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const visibleIngredients = useMemo(() => {
     if (searchInputValue) {
       return ingredients.filter((ingredient => ingredient.title.toLowerCase().includes(searchInputValue.toLocaleLowerCase())));
@@ -31,7 +33,16 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
       }
       setIngredients(loadedIngredients);
       setLoading(false);
+      if (error) {
+        setError(null);
+      }
+    }).catch(error => {
+      setError(error.message);
     })
+  }
+
+  const closeModal = () => {
+    setError(null);
   }
 
   useEffect(() => {
@@ -52,6 +63,11 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
         ...prevIngredients,
         {id: responseData.name, ...ingredient}
       ]);
+      if (error) {
+        setError(null);
+      }
+    }).catch(error => {
+      setError(error.message);
     })
   }
 
@@ -60,7 +76,12 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
       method: "DELETE",
     }).then(() => {
       loadIngredients();
-    });
+      if (error) {
+        setError(null);
+      }
+    }).catch(error => {
+      setError(error.message);
+    })
   }
 
   return (
@@ -70,6 +91,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
         <Search searchInputValue={searchInputValue} setSearchInputValue={setSearchInputValue}/>
         <IngredientList ingredients={visibleIngredients} onRemoveItem={removeIngredient}/>
       </section>
+      {error && (<ErrorModal onClose={closeModal}>{error}</ErrorModal>)}
     </div>
   );
 }
