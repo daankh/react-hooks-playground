@@ -15,7 +15,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
     return ingredients; 
   }, [ingredients, searchInputValue]);
 
-  useEffect(() => {
+  const loadIngredients = () => {
     fetch(url).then(response => {
       return response.json();
     }).then(data => {
@@ -29,6 +29,10 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
       }
       setIngredients(loadedIngredients);
     })
+  }
+
+  useEffect(() => {
+    loadIngredients();
   }, [])
 
   const addIngredient = (ingredient) => {
@@ -49,15 +53,11 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
   }
 
   const removeIngredient = (id) => {
-    fetch(url + "/" + id, {
+    fetch("https://ingredients-store-88a49.firebaseio.com/ingredients/" + id + ".json", {
       method: "DELETE",
-    }).then(response => {
-      return response.json();
-    }).then(responseBody => {
-      const filteredIngredients = ingredients.filter(ingredient => ingredient.id !== responseBody.name);
-      setIngredients(filteredIngredients);
-    })
-    
+    }).then(() => {
+      loadIngredients();
+    });
   }
 
   return (
