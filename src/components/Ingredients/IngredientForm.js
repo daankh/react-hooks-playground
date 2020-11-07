@@ -11,7 +11,7 @@ const IngredientForm = React.memo(({setIngredients}) => {
     event.preventDefault();
     if (name && amount) {
       const ingredient = {
-        id: name,
+        id: Math.random().toString(),
         title: name,
         amount
       }
