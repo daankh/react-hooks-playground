@@ -43,6 +43,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
 
   const closeModal = () => {
     setError(null);
+    setLoading(false);
   }
 
   useEffect(() => {
