@@ -8,6 +8,7 @@ const Ingredients = () => {
 const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
   const [ingredients, setIngredients] = useState([]);
   const [searchInputValue, setSearchInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
   const visibleIngredients = useMemo(() => {
     if (searchInputValue) {
       return ingredients.filter((ingredient => ingredient.title.toLowerCase().includes(searchInputValue.toLocaleLowerCase())));
@@ -16,6 +17,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
   }, [ingredients, searchInputValue]);
 
   const loadIngredients = () => {
+    setLoading(true);
     fetch(url).then(response => {
       return response.json();
     }).then(data => {
@@ -28,6 +30,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
         loadedIngredients.push(ingredient);
       }
       setIngredients(loadedIngredients);
+      setLoading(false);
     })
   }
 
@@ -62,8 +65,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
 
   return (
     <div className="App">
-      <IngredientForm addIngredient={addIngredient}/>
-
+      <IngredientForm addIngredient={addIngredient} loading={loading}/>
       <section>
         <Search searchInputValue={searchInputValue} setSearchInputValue={setSearchInputValue}/>
         <IngredientList ingredients={visibleIngredients} onRemoveItem={removeIngredient}/>
