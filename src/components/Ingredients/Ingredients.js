@@ -1,4 +1,4 @@
-import React,  { useState, useEffect, useMemo }  from 'react';
+import React,  { useState, useEffect, useCallback, useMemo }  from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from "./IngredientList";
@@ -6,7 +6,7 @@ import ErrorModal from "../UI/ErrorModal";
 import Search from './Search';
 
 const Ingredients = () => {
-const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
+  const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
   const [ingredients, setIngredients] = useState([]);
   const [searchInputValue, setSearchInputValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
     return ingredients; 
   }, [ingredients, searchInputValue]);
 
-  const loadIngredients = () => {
+  const loadIngredients = useCallback(() => {
     setLoading(true);
     fetch(url).then(response => {
       return response.json();
@@ -39,18 +39,18 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
     }).catch(error => {
       setError(error.message);
     })
-  }
+  }, [error]);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setError(null);
     setLoading(false);
-  }
+  }, [])
 
   useEffect(() => {
     loadIngredients();
-  }, [])
+  }, [loadIngredients])
 
-  const addIngredient = (ingredient) => {
+  const addIngredient = useCallback((ingredient) => {
     fetch(url, {
       method: "POST",
       body: JSON.stringify(ingredient),
@@ -70,9 +70,9 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
     }).catch(error => {
       setError(error.message);
     })
-  }
+  }, [error])
 
-  const removeIngredient = (id) => {
+  const removeIngredient = useCallback((id) => {
     fetch("https://ingredients-store-88a49.firebaseio.com/ingredients/" + id + ".json", {
       method: "DELETE",
     }).then(() => {
@@ -83,7 +83,7 @@ const url = "https://ingredients-store-88a49.firebaseio.com/ingredients.json"
     }).catch(error => {
       setError(error.message);
     })
-  }
+  }, [error, loadIngredients])
 
   return (
     <div className="App">
